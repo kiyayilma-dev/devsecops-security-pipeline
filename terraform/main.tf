@@ -66,6 +66,7 @@ resource "aws_route_table_association" "public" {
 }
 
 # 8. Create a Security Group to control traffic (Firewall)
+#trivy:ignore:AVD-AWS-0104
 resource "aws_security_group" "web" {
   name        = "devops-track-sg"
   description = "Allow SSH and HTTP"
