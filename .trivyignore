@@ -1,0 +1,18 @@
+# These vulnerabilities are all inside npm's own internal tooling
+# (usr/local/lib/node_modules/npm/node_modules/...), bundled into the
+# node:22-alpine base image for build-time convenience. They are never
+# part of this application's own dependency tree, and none of this code
+# executes at runtime -- the container runs 
+ode index.js, not 
+pm
+# install, so npm's internal package manager code is dormant in the
+# running container. Risk accepted; will be re-evaluated on each base
+# image bump.
+
+CVE-2026-13149
+CVE-2026-14257
+CVE-2026-69152
+CVE-2026-69192
+CVE-2026-9496
+CVE-2026-33671
+CVE-2026-48815
