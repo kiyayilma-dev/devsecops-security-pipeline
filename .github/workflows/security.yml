@@ -39,6 +39,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-fs.sarif
+          category: trivy-fs
 
   container-image-scan:
     runs-on: ubuntu-latest
@@ -61,7 +62,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-image.sarif
-
+          category: trivy-image
   iac-scan:
     runs-on: ubuntu-latest
     permissions:
@@ -77,4 +78,11 @@ jobs:
 
       - name: Scan Terraform for misconfigurations
         run: |
-          trivy config --severity HIGH,CRITICAL --exit-code 1 --format table ./terraform
+          trivy config --severity HIGH,CRITICAL --exit-code 1 --format sarif --output trivy-iac.sarif ./terraform
+
+      - name: Upload results
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-iac.sarif
+          category: trivy-iac
