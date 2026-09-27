@@ -67,16 +67,14 @@ jobs:
     permissions:
       contents: read
       security-events: write
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Install Trivy
         run: |
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
       - name: Scan Terraform for misconfigurations
-  run: |
-    trivy config --severity HIGH,CRITICAL --exit-code 1 --format table ./terraform
-      - name: Upload results
-        if: always()
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: trivy-iac.sarif
+        run: |
+          trivy config --severity HIGH,CRITICAL --exit-code 1 --format table ./terraform
