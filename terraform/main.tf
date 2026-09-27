@@ -28,7 +28,7 @@ resource "aws_vpc" "main" {
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
   availability_zone       = "${var.aws_region}a"
 
   tags = {
@@ -88,9 +88,18 @@ resource "aws_security_group" "web" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    description = "Allow outbound HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description = "Allow outbound HTTPS"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -106,6 +115,14 @@ resource "aws_instance" "web" {
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.web.id]
   key_name               = var.key_pair_name
+
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  root_block_device {
+    encrypted = true
+  }
 
   tags = {
     Name = "devops-track-terraform-instance"
